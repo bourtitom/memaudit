@@ -22,7 +22,15 @@ class RegistrationFormType extends AbstractType
             ->add('firstname')
             ->add('lastname')
             ->add('birthdate')
-            ->add('language')
+            ->add('language', ChoiceType::class, [
+                'choices' => [
+                    'Français' => 0, // Stocke 1 pour Français
+                    'Anglais' => 1,  // Stocke 2 pour Anglais
+                ],
+                'expanded' => true,  // Transforme en boutons radio
+                'multiple' => false, // Un seul choix à la fois
+            ])
+        
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
