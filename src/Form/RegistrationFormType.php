@@ -19,7 +19,9 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('mail')
-            ->add('username')
+            ->add('firstname')
+            ->add('lastname')
+            ->add('birthdate')
             ->add('language')
             ->add('roles', ChoiceType::class, [
                 'choices' => [
