@@ -21,6 +21,7 @@ use App\Entity\Card;
 class CreateTheme extends Command
 {
     private $themeManager;
+    private $cardManager;
     private $client;
     private $logger;
 
