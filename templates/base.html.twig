@@ -17,17 +17,25 @@
 <body>
 <div class="container">
     <header class="d-flex justify-content-center py-3">
-      <ul class="nav nav-pills ">
-        <li class="nav-item"><a href="#" class="nav-link active text-white" aria-current="page">Game</a></li>
-        <li class="nav-item"><a href="#" class="nav-link text-white">Scores</a></li>
-         {% if is_granted('ROLE_ADMIN') %}
-      <li class="nav-item"><a href="#" class="nav-link active text-white">List User</a></li>
-      <li class="nav-item"><a href="#" class="nnav-link active text-white">Add user</a></li>
-      {% endif %}
-      <li class="nav-item"><a href="/logout" class="nav-link active text-white">Logout</a></li>
-      </ul>
+        <ul class="nav nav-pills">
+            {% if is_granted('ROLE_USER') and not is_granted('ROLE_ADMIN') %}
+                <li class="nav-item"><a href="/game" class="nav-link active text-white" aria-current="page">Game</a><li>
+                <li class="nav-item"><a href="#" class="nav-link text-white">Scores</a></li>
+            {% endif %}
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item"><a href="/register" class="nav-link active px-2 text-white">Add user</a></li>
+                <li class="nav-item"><a href="#" class="nav-link px-2 text-white">List User</a></li>
+                <li class="nav-item"><a href="#" class="nav-link text-white">Scores</a></li>
+            {% endif %}
+
+            {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
+                <li class="nav-item"><a href="/logout" class="nav-link px-2 text-white">Logout</a></li>
+            {% endif %}
+        </ul>
     </header>
-  </div>
+</div>
+
 
 
 
@@ -36,7 +44,7 @@
 
 
 <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-    <p class="col-md-4 mb-0 text-body-secondary">© 2024 Company, Inc</p>
+    <p class="col-md-4 mb-0 text-body-secondary">Â© 2024 Company, Inc</p>
 
     <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
       <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>

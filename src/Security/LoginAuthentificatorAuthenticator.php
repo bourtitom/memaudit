@@ -55,7 +55,7 @@ class LoginAuthentificatorAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($this->urlGenerator->generate('app_register'));
         }
         else {
-            return new RedirectResponse($this->urlGenerator->generate('app_game'));
+            return new RedirectResponse($this->urlGenerator->generate('app_login'));
         }
         
     }
