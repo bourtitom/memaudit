@@ -9,6 +9,8 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Theme;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Psr\Log\LoggerInterface;
+use App\Entity\Card;
 
 #[AsCommand(
     name: 'app:create-theme',
@@ -20,12 +22,15 @@ class CreateTheme extends Command
 {
     private $themeManager;
     private $client;
+    private $logger;
 
-    public function __construct(EntityManagerInterface $themeManager, HttpClientInterface $client)
+    public function __construct(EntityManagerInterface $themeManager, HttpClientInterface $client, LoggerInterface $logger, EntityManagerInterface $cardManager)
     {
         parent::__construct();
         $this->themeManager = $themeManager;
-        $this->client = $client; // Initialisation du client HTTP
+        $this->cardManager = $cardManager;
+        $this->client = $client; 
+        $this->logger = $logger;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -34,7 +39,7 @@ class CreateTheme extends Command
             'Theme Creator',
             '============',
         ]);
-
+        $this->logger->info('I just got the logger');
         $helper = $this->getHelper('question');
 
         $question = new Question('Quel type de jeu voulez-vous (Visuel [0], Cognitif [1]) ? ', 'Visuel');
@@ -78,16 +83,26 @@ class CreateTheme extends Command
                 foreach ($data['hits'] as $hit) {
                     if ($gameType === 0) {
                         $output->writeln($hit['webformatURL']);
+                        $card = new Card();
+                        $card->setImgPath($hit['webformatURL']);
+                        $card->setType($gameType);
+                        $card->setIdTheme($theme->getId());
+                        
+                        $this->cardManager->persist($card);
                     } else {    
                         $output->writeln($hit['pageURL']);
                     }
                 }
+                $this->cardManager->flush();
+
             } else {
                 $output->writeln('No results found for the theme.');
             }
+
         } catch (\Exception $e) {
             $output->writeln('Error fetching data from Pixabay: ' . $e->getMessage());
         }
+
 
         return Command::SUCCESS;
     }
