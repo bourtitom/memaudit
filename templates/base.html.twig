@@ -19,13 +19,13 @@
     <header class="d-flex justify-content-center py-3">
         <ul class="nav nav-pills">
             {% if is_granted('ROLE_USER') and not is_granted('ROLE_ADMIN') %}
-                <li class="nav-item"><a href="/game" class="nav-link active text-white" aria-current="page">Game</a><li>
+                <li class="nav-item"><a href="{{ path('app_game') }}" class="nav-link {% if app.request.attributes.get('_route') == 'app_game' %}active{% endif %} px-2 text-white">Game</a></li>
                 <li class="nav-item"><a href="#" class="nav-link text-white">Scores</a></li>
             {% endif %}
 
             {% if is_granted('ROLE_ADMIN') %}
-                <li class="nav-item"><a href="/register" class="nav-link active px-2 text-white">Add user</a></li>
-                <li class="nav-item"><a href="/user" class="nav-link px-2 text-white">List User</a></li>
+                <li class="nav-item"><a href="{{ path('app_register') }}" class="nav-link {% if app.request.attributes.get('_route') == 'app_register' %}active{% endif %} px-2 text-white">Add user</a></li>
+                <li class="nav-item"><a href="{{ path('app_user') }}" class="nav-link px-2 text-white {% if app.request.attributes.get('_route') == 'app_user' %}active{% endif %}">List User</a></li>
                 <li class="nav-item"><a href="#" class="nav-link text-white">Scores</a></li>
             {% endif %}
 
