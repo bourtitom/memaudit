@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container">
-        <h1 class="text-center my-4">Liste des utilisateurs</h1>
+        <h1 class="text-center my-4">{{ 'userList'|trans }}</h1>
 
         <div class="d-flex justify-content-center">
         {% set hasUserRole = false %}
@@ -19,12 +19,12 @@
             <table class="table table-striped table-bordered">
                 <thead class="thead-dark">
                     <tr>
-                        <th>ID</th>
-                        <th>Prénom</th>
-                        <th>Nom</th>
-                        <th>Email</th>
-                        <th>Date de naissance</th>
-                        <th>Actions</th>
+                        <th style="width: 5%;">Id</th>
+                        <th style="width: 20%;">{{ 'firstname'|trans }}</th>
+                        <th style="width: 20%;">{{ 'name'|trans }}</th>
+                        <th style="width: 25%;">{{ 'email'|trans }}</th>
+                        <th style="width: 15%;">{{ 'birthdate'|trans }}</th>
+                        <th style="width: 15%;">{{ 'actions'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,8 +43,8 @@
                                             <input type="date" name="birthdate" value="{{ user.birthdate ? user.birthdate|date('Y-m-d') : '' }}" class="form-control">
                                         </td>
                                         <td>
-                                            <button type="submit" class="btn btn-success btn-sm">Enregistrer</button>
-                                            <a href="{{ path('app_user') }}" class="btn btn-secondary btn-sm">Annuler</a>
+                                            <button type="submit" class="btn btn-success btn-sm">{{ 'register'|trans }}</button>
+                                            <a href="{{ path('app_user') }}" class="btn btn-secondary btn-sm">{{ 'cancel'|trans }}</a>
                                         </td>
                                     </form>
                                 {% else %}
@@ -60,10 +60,10 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <a href="{{ path('app_user', {edit: user.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                        <a href="{{ path('app_user', {edit: user.id}) }}" class="btn btn-warning btn-sm">{{ 'edit'|trans }}</a>
                                         <form action="{{ path('app_user_delete', {id: user.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
                                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                                            <button type="submit" class="btn btn-danger btn-sm">{{ 'delete'|trans }}</button>
                                         </form>
                                     </td>
                                 {% endif %}
@@ -73,7 +73,7 @@
                 </tbody>
             </table>
         {% else %}
-            <p>Aucun utilisateur trouvé.</p>
+            <p>{{ 'No users found'|trans }}</p>
         {% endif %}
         </div>
     </div>
