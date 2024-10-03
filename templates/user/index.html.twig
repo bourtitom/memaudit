@@ -7,50 +7,74 @@
         <h1 class="text-center my-4">Liste des utilisateurs</h1>
 
         <div class="d-flex justify-content-center">
-{% set hasUserRole = false %}
+        {% set hasUserRole = false %}
 
-{% for user in users %}
-    {% if 'ROLE_USER' in user.roles and 'ROLE_ADMIN' not in user.roles %}
-        {% set hasUserRole = true %}
-    {% endif %}
-{% endfor %}
+        {% for user in users %}
+            {% if 'ROLE_USER' in user.roles and 'ROLE_ADMIN' not in user.roles %}
+                {% set hasUserRole = true %}
+            {% endif %}
+        {% endfor %}
 
-{% if users|length > 0 and hasUserRole %}
-    <table class="table table-striped table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th>ID</th>
-                <th>Prénom</th>
-                <th>Nom</th>
-                <th>Email</th>
-                <th>Date de naissance</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-                {% if 'ROLE_USER' in user.roles and 'ROLE_ADMIN' not in user.roles %}
+        {% if users|length > 0 and hasUserRole %}
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
                     <tr>
-                        <td>{{ user.id }}</td>
-                        <td>{{ user.firstname }}</td>
-                        <td>{{ user.lastname }}</td>
-                        <td>{{ user.mail }}</td>
-                        <td>
-                            {% if user.birthdate %}
-                                {{ user.birthdate|date('d/m/Y') }}
-                            {% else %}
-                                N/A
-                            {% endif %}
-                        </td>
+                        <th>ID</th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Date de naissance</th>
+                        <th>Actions</th>
                     </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>Aucun utilisateur trouvé.</p>
-{% endif %}
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        {% if 'ROLE_USER' in user.roles and 'ROLE_ADMIN' not in user.roles %}
+                            <tr id="user-row-{{ user.id }}">
+                                <td>{{ user.id }}</td>
+
+                                {# Si l'utilisateur est en mode édition, montrer des champs de formulaire #}
+                                {% if app.request.get('edit') == user.id %}
+                                    <form action="{{ path('app_user_update', {id: user.id}) }}" method="post">
+                                        <td><input type="text" name="firstname" value="{{ user.firstname }}" class="form-control"></td>
+                                        <td><input type="text" name="lastname" value="{{ user.lastname }}" class="form-control"></td>
+                                        <td><input type="text" name="mail" value="{{ user.mail }}" class="form-control"></td>
+                                        <td>
+                                            <input type="date" name="birthdate" value="{{ user.birthdate ? user.birthdate|date('Y-m-d') : '' }}" class="form-control">
+                                        </td>
+                                        <td>
+                                            <button type="submit" class="btn btn-success btn-sm">Enregistrer</button>
+                                            <a href="{{ path('app_user') }}" class="btn btn-secondary btn-sm">Annuler</a>
+                                        </td>
+                                    </form>
+                                {% else %}
+                                    {# Sinon, afficher les valeurs en lecture seule #}
+                                    <td>{{ user.firstname }}</td>
+                                    <td>{{ user.lastname }}</td>
+                                    <td>{{ user.mail }}</td>
+                                    <td>
+                                        {% if user.birthdate %}
+                                            {{ user.birthdate|date('d/m/Y') }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('app_user', {edit: user.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                        <form action="{{ path('app_user_delete', {id: user.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                                        </form>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
                 </tbody>
             </table>
+        {% else %}
+            <p>Aucun utilisateur trouvé.</p>
+        {% endif %}
         </div>
     </div>
 {% endblock %}
