@@ -30,7 +30,7 @@
             {% endif %}
 
             {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
-                <li class="nav-item"><a href="/logout" class="nav-link px-2 text-white">Logout</a></li>
+                <li class="nav-item"><a href="/logout" class="nav-link px-2 text-white">{{ 'logout'|trans }}</a></li>
             {% endif %}
         </ul>
     </header>
@@ -50,16 +50,23 @@
       <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
     </a>
 
-    <ul class="nav col-md-4 justify-content-end">
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Game</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Scores</a></li>
-      {% if is_granted('ROLE_ADMIN') %}
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">List User</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Add user</a></li>
-      {% endif %}
 
+     <ul class="nav col-md-4 justify-content-end">
+            {% if is_granted('ROLE_USER') and not is_granted('ROLE_ADMIN') %}
+                <li class="nav-item"><a href="/game" class="nav-link px-2 text-body-secondary" aria-current="page">{{ 'play'|trans }}</a><li>
+                <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">{{ 'scores'|trans }}</a></li>
+            {% endif %}
 
-    </ul>
+            {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item"><a href="/register" class="nav-link px-2 text-body-secondary">{{ 'add user'|trans }}</a></li>
+                <li class="nav-item"><a href="/user" class="nav-link px-2 text-body-secondary">{{ 'userList'|trans }}</a></li>
+                <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">{{ 'scores'|trans }}</a></li>
+            {% endif %}
+
+            {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
+                <li class="nav-item"><a href="/logout" class="nav-link px-2 text-body-secondary">{{ 'logout'|trans }}</a></li>
+            {% endif %}
+        </ul>
   </footer>
 
 </body>
