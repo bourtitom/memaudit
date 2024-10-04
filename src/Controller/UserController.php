@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_user')]
+    #[IsGranted(attribute: 'ROLE_ADMIN')]
     public function index(UserRepository $userRepository): Response
     {
         $users = $userRepository->findAll();
