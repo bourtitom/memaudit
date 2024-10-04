@@ -20,7 +20,7 @@
         <ul class="nav nav-pills">
             {% if is_granted('ROLE_USER') and not is_granted('ROLE_ADMIN') %}
                 <li class="nav-item"><a href="{{ path('app_choose') }}" class="nav-link {% if app.request.attributes.get('_route') == 'app_choose' %}active{% endif %} px-2 text-white">{{ 'play'|trans }}</a></li>
-                <li class="nav-item"><a href="#" class="nav-link text-white">Scores</a></li>
+                <li class="nav-item"><a href="/score" class="nav-link text-white">Scores</a></li>
             {% endif %}
 
             {% if is_granted('ROLE_ADMIN') %}

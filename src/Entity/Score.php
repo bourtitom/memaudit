@@ -21,17 +21,21 @@ class Score
     private ?int $theme = null;
 
     #[ORM\Column]
-    private ?int $level = null;
+    private ?int $level = 1;
 
     #[ORM\Column]
-    private ?int $type_partie = null;
+    private ?int $type_partie = 0;
 
     #[ORM\Column]
-    private ?int $id_user = null;
+    private ?int $id_user = 1;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
-    
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {

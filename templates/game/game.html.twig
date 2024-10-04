@@ -141,28 +141,32 @@
         }
 
   
-           function saveScore(moves) {
-            fetch('{{ path('save_score') }}?theme=' + currentTheme, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({ moves: moves })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Score saved:', data);
-            })
-            .catch(error => {
-                console.error('Error saving score:', error);
-            });
-        }
+    let currentTheme = {{ themeId|default(1) }}; // Provide a default value
+
+    function saveScore(moves) {
+        fetch('{{ path('save_score') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ moves: moves, theme: currentTheme })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Score saved:', data);
+            alert(`Félicitations ! Vous avez gagné en ${moves} coups ! Votre score a été enregistré.`);
+        })
+        .catch(error => {
+            console.error('Error saving score:', error);
+            alert(`Félicitations ! Vous avez gagné en ${moves} coups ! Malheureusement, une erreur est survenue lors de l'enregistrement du score: ${error.message}`);
+        });
+    }
 
         function checkMatch() {
             const [card1, card2] = flippedCards;
@@ -174,7 +178,6 @@
                 if (matchedPairs === selectedImages.length) {
                     setTimeout(() => {
                         saveScore(moves);
-                        alert(`Félicitations ! Vous avez gagné en ${moves} coups !`);
                     }, 500);
                 }
             } else {
