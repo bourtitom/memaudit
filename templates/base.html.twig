@@ -19,14 +19,13 @@
     <header class="d-flex justify-content-center py-3">
         <ul class="nav nav-pills">
             {% if is_granted('ROLE_USER') and not is_granted('ROLE_ADMIN') %}
-                <li class="nav-item"><a href="{{ path('app_game') }}" class="nav-link {% if app.request.attributes.get('_route') == 'app_game' %}active{% endif %} px-2 text-white">{{ 'play'|trans }}</a></li>
-                <li class="nav-item"><a href="#" class="nav-link text-white">Scores</a></li>
+                <li class="nav-item"><a href="{{ path('app_choose') }}" class="nav-link {% if app.request.attributes.get('_route') == 'app_choose' %}active{% endif %} px-2 text-white">{{ 'play'|trans }}</a></li>
             {% endif %}
 
             {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item"><a href="{{ path('app_register') }}" class="nav-link {% if app.request.attributes.get('_route') == 'app_register' %}active{% endif %} px-2 text-white">{{ 'add user'|trans }}</a></li>
                 <li class="nav-item"><a href="{{ path('app_user') }}" class="nav-link px-2 text-white {% if app.request.attributes.get('_route') == 'app_user' %}active{% endif %}">{{ 'userList'|trans }}</a></li>
-                <li class="nav-item"><a href="#" class="nav-link text-white">Scores</a></li>
+                <li class="nav-item"><a href="/score" class="nav-link text-white">Scores</a></li>
             {% endif %}
 
             {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
@@ -54,7 +53,6 @@
      <ul class="nav col-md-4 justify-content-end">
             {% if is_granted('ROLE_USER') and not is_granted('ROLE_ADMIN') %}
                 <li class="nav-item"><a href="/game" class="nav-link px-2 text-body-secondary" aria-current="page">{{ 'play'|trans }}</a><li>
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">{{ 'scores'|trans }}</a></li>
             {% endif %}
 
             {% if is_granted('ROLE_ADMIN') %}

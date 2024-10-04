@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ScoreController extends AbstractController
@@ -14,27 +15,36 @@ class ScoreController extends AbstractController
     #[Route('/save-score', name: 'save_score', methods: ['POST'])]
     public function saveScore(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $moves = $data['moves'];
-        $theme = $request->query->get('theme'); // Récupération du thème depuis l'URL
-        
-        // Récupération de l'utilisateur connecté
-        $user = $this->getUser();
-        if (!$user) {
-            return new JsonResponse(['error' => 'User not logged in'], 401);
+        try {
+            $data = json_decode($request->getContent(), true);
+            
+            if (!isset($data['moves']) || !isset($data['theme'])) {
+                throw new \InvalidArgumentException('Missing required data: moves or theme');
+            }
+
+            $score = new Score();
+            $score->setMoove((int)$data['moves']);
+            $score->setTheme((int)$data['theme']);
+            $score->setLevel(1); // Assuming level 1 for now
+            $score->setTypePartie(0); // Assuming type 0 for now
+            $score->setIdUser(1); // Assuming user 1 for now, you might want to get the actual user ID
+            $score->setCreatedAt(new \DateTimeImmutable());
+
+            $entityManager->persist($score);
+            $entityManager->flush();
+
+            return $this->json(['success' => true, 'message' => 'Score saved successfully']);
+        } catch (\Exception $e) {
+            return $this->json(['success' => false, 'message' => 'Error saving score: ' . $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-    
-        $score = new Score();
-        $score->setMoove($moves);
-        $score->setTheme($theme);
-        $score->setLevel(1);
-        $score->setTypePartie(0);
-        $score->setIdUser($user->getId());
-        $score->setCreatedAt(new \DateTime());
-    
-        $entityManager->persist($score);
-        $entityManager->flush();
-    
-        return new JsonResponse(['status' => 'Score saved successfully'], 200);
+    }
+    #[Route('/score', name: 'app_score')]
+    public function index(EntityManagerInterface $entityManager): Response
+    {
+        $scores = $entityManager->getRepository(Score::class)->findAll();
+
+        return $this->render('score/index.html.twig', [
+            'scores' => $scores,
+        ]);
     }
 }
