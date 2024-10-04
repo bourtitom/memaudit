@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Jeu de Memory{% endblock %}
 
 {% block body %}
     <style>
@@ -28,22 +28,27 @@
             justify-content: center;
             align-items: center;
             font-size: 24px;
+            border-radius: 8px;
+            overflow: hidden;
         }
         .card-front {
             background-color: var(--bs-primary);
             color: white;
         }
         .card-back {
-            background-color: var(--bs-info);
-            color: white;
+            background-color: white;
             transform: rotateY(180deg);
         }
+        .card-back img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
         .card-flip.matched .card-back {
-            background-color: var(--bs-success);
+            outline: 3px solid var(--bs-success);
         }
     </style>
-</head>
-<body>
+
     <div class="container mt-5">
         <h1 class="text-center mb-4">Jeu de Memory</h1>
         
@@ -56,10 +61,22 @@
         </div>
     </div>
 
-    </div>
+     <script>
+        // Limiter à 6 images (qui seront dupliquées pour faire 12 cartes)
+        let allImages = {{ images|json_encode|raw }};
+        let selectedImages = [];
+        
+        // Sélectionner aléatoirement 6 images
+        if (allImages.length > 3) {
+            const shuffledImages = shuffleArray([...allImages]);
+            selectedImages = shuffledImages.slice(0, 4);
+        } else {
+            selectedImages = allImages;
+        }
 
-    <script>
-        const symbols = ['🎨', '🎵', '🎮', '📚', '⚽', '🎬', '🎨', '🎵', '🎮', '📚', '⚽', '🎬'];
+        // Dupliquer les images pour créer les paires
+        const gameImages = [...selectedImages, ...selectedImages];
+        
         let flippedCards = [];
         let matchedPairs = 0;
         let moves = 0;
@@ -73,10 +90,10 @@
         }
 
         function createBoard() {
-            const shuffledSymbols = shuffleArray([...symbols]);
+            const shuffledImages = shuffleArray(gameImages);
             const gameContainer = document.getElementById('gameContainer');
             
-            shuffledSymbols.forEach((symbol, index) => {
+            shuffledImages.forEach((imagePath, index) => {
                 const colDiv = document.createElement('div');
                 colDiv.className = 'col-6 col-sm-4 col-md-2';
 
@@ -86,15 +103,18 @@
                 const cardFlip = document.createElement('div');
                 cardFlip.className = 'card-flip shadow-sm';
                 cardFlip.dataset.index = index;
-                cardFlip.dataset.symbol = symbol;
+                cardFlip.dataset.image = imagePath;
 
                 const cardFront = document.createElement('div');
-                cardFront.className = 'card-front rounded';
+                cardFront.className = 'card-front';
                 cardFront.innerHTML = '❓';
 
                 const cardBack = document.createElement('div');
-                cardBack.className = 'card-back rounded';
-                cardBack.textContent = symbol;
+                cardBack.className = 'card-back';
+                const img = document.createElement('img');
+                img.src = imagePath;
+                img.alt = 'Card image';
+                cardBack.appendChild(img);
 
                 cardFlip.appendChild(cardFront);
                 cardFlip.appendChild(cardBack);
@@ -120,15 +140,40 @@
             }
         }
 
+  
+           function saveScore(moves) {
+            fetch('{{ path('save_score') }}?theme=' + currentTheme, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ moves: moves })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Score saved:', data);
+            })
+            .catch(error => {
+                console.error('Error saving score:', error);
+            });
+        }
+
         function checkMatch() {
             const [card1, card2] = flippedCards;
 
-            if (card1.dataset.symbol === card2.dataset.symbol) {
+            if (card1.dataset.image === card2.dataset.image) {
                 card1.classList.add('matched');
                 card2.classList.add('matched');
                 matchedPairs++;
-                if (matchedPairs === 6) {
+                if (matchedPairs === selectedImages.length) {
                     setTimeout(() => {
+                        saveScore(moves);
                         alert(`Félicitations ! Vous avez gagné en ${moves} coups !`);
                     }, 500);
                 }
@@ -139,7 +184,7 @@
             flippedCards = [];
         }
 
+
         createBoard();
     </script>
-
-{% endblock %}
+{% endblock %}  

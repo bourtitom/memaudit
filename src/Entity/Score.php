@@ -15,19 +15,23 @@ class Score
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $idUser = null;
-
-    #[ORM\Column]
-    private ?int $level = null;
-
-    #[ORM\Column]
-    private ?bool $type_partie = null;
+    private ?int $moove = null;
 
     #[ORM\Column]
     private ?int $theme = null;
 
     #[ORM\Column]
-    private ?int $score = null;
+    private ?int $level = null;
+
+    #[ORM\Column]
+    private ?int $type_partie = null;
+
+    #[ORM\Column]
+    private ?int $id_user = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at = null;
+    
 
     public function getId(): ?int
     {
@@ -70,6 +74,17 @@ class Score
         return $this;
     }
 
+    public function getMoove(): ?int
+    {
+        return $this->moove;
+    }
+
+    public function setMoove(int $moove): static
+    {
+        $this->moove = $moove;
+
+        return $this;
+    }
 
     public function getTheme(): ?int
     {
@@ -83,14 +98,15 @@ class Score
         return $this;
     }
 
-    public function getScore(): ?int
+
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->score;
+        return $this->created_at;
     }
 
-    public function setScore(int $score): static
+    public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
-        $this->score = $score;
+        $this->created_at = $created_at;
 
         return $this;
     }
