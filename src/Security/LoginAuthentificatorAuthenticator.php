@@ -50,13 +50,9 @@ class LoginAuthentificatorAuthenticator extends AbstractLoginFormAuthenticator
 
         // For example:
         // return new RedirectResponse($this->urlGenerator->generate('some_route'));
-        if (in_array('ROLE_ADMIN', $token->getUser()->getRoles())) {
-            // Redirection si l'utilisateur est admin
-            return new RedirectResponse($this->urlGenerator->generate('app_register'));
-        }
-        else {
-            return new RedirectResponse($this->urlGenerator->generate('app_login'));
-        }
+
+        return  new RedirectResponse($this->urlGenerator->generate('app_set_locale'));
+
         
     }
 
