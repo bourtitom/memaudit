@@ -38,4 +38,13 @@ class ScoreController extends AbstractController
             return $this->json(['success' => false, 'message' => 'Error saving score: ' . $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
+    #[Route('/score', name: 'app_score')]
+    public function index(EntityManagerInterface $entityManager): Response
+    {
+        $scores = $entityManager->getRepository(Score::class)->findAll();
+
+        return $this->render('score/index.html.twig', [
+            'scores' => $scores,
+        ]);
+    }
 }

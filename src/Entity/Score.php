@@ -27,7 +27,7 @@ class Score
     private ?int $type_partie = 0;
 
     #[ORM\Column]
-    private ?int $id_user = 1;
+    private ?int $idUser = 1;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
