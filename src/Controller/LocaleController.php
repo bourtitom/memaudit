@@ -34,7 +34,7 @@ class LocaleController extends AbstractController
             return new RedirectResponse($this->generateUrl('app_register'));
         } else {
             // Redirection vers la page de connexion pour les autres utilisateurs
-            return new RedirectResponse($this->generateUrl('app_login'));
+            return new RedirectResponse($this->generateUrl('app_choose'));
         }
     }
 }
