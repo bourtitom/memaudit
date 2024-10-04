@@ -23,11 +23,11 @@ class Score
     #[ORM\Column]
     private ?bool $type_partie = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $time = null;
-
     #[ORM\Column]
     private ?int $theme = null;
+
+    #[ORM\Column]
+    private ?int $score = null;
 
     public function getId(): ?int
     {
@@ -70,17 +70,6 @@ class Score
         return $this;
     }
 
-    public function getTime(): ?\DateTimeInterface
-    {
-        return $this->time;
-    }
-
-    public function setTime(\DateTimeInterface $time): static
-    {
-        $this->time = $time;
-
-        return $this;
-    }
 
     public function getTheme(): ?int
     {
@@ -90,6 +79,18 @@ class Score
     public function setTheme(int $theme): static
     {
         $this->theme = $theme;
+
+        return $this;
+    }
+
+    public function getScore(): ?int
+    {
+        return $this->score;
+    }
+
+    public function setScore(int $score): static
+    {
+        $this->score = $score;
 
         return $this;
     }
